@@ -1,0 +1,44 @@
+{
+ "name": "الشاعر لايف - الطالب",
+ "short_name": "الشاعر لايف",
+ "description": "حضور المحاضرات المباشرة والمسجلة والاختبارات",
+ "lang": "ar",
+ "dir": "rtl",
+ "start_url": "./talp_react.html",
+ "scope": "./",
+ "id": "./talp_react.html",
+ "display": "standalone",
+ "display_override": [
+  "standalone",
+  "minimal-ui"
+ ],
+ "orientation": "any",
+ "background_color": "#061820",
+ "theme_color": "#061820",
+ "icons": [
+  {
+   "src": "icon-student-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-student-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "maskable"
+  },
+  {
+   "src": "icon-student-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-student-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

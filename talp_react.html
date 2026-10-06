@@ -1,0 +1,241 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="theme-color" content="#061820"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>الشاعر لايف - الطالب</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
+<style>
+:root{--ink:#061820;--line:#ffffff17;--g:#f2b84b;--g2:#e8913a;--t1:#0d9488;--t2:#0ea5e9;--tl:#5eead4;--tx:#e6f1f3;--mu:#8fb0b8;--r:#fb7185;--glass:#0a202aa6}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;color:var(--tx);font-family:Cairo,sans-serif;min-height:100vh;padding-bottom:88px;background:radial-gradient(120% 80% at 80% -10%,#0d3a45,transparent 60%),radial-gradient(90% 70% at 0 100%,#10264a,transparent 60%),var(--ink);background-attachment:fixed}
+main{max-width:680px;margin:auto;padding:0 14px}
+.hide{display:none!important}.mu{color:var(--mu);font-size:.85rem;margin:4px 0}
+/* الشريط العلوي */
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;margin:0 -14px;padding:calc(env(safe-area-inset-top) + 10px) 14px 10px;background:#061820d9;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.lg{width:42px;height:42px;flex:none;border-radius:13px;display:grid;place-items:center;font-size:1.3rem;background:linear-gradient(135deg,var(--g),var(--g2));box-shadow:0 8px 20px -10px #f2b84bb3}
+.tt{flex:1;min-width:0}.tt b{display:block;font-weight:900;font-size:1.02rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tt small{color:var(--mu);font-size:.75rem}
+.top select{width:auto;max-width:42vw;margin:0;padding:8px 10px}
+.chip{display:none;align-items:center;gap:6px;font-size:.78rem;font-weight:700;color:#2a1a02;background:linear-gradient(135deg,var(--g),var(--g2));padding:4px 11px;border-radius:99px}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7f1d1d;animation:pl 1.6s infinite}
+body.islive .chip{display:inline-flex}
+@keyframes pl{50%{opacity:.25}}
+/* الشاشات */
+.scr{display:none;padding-top:6px}.scr.on{display:block;animation:fd .25s ease-out}
+@keyframes fd{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.lg2{display:grid;gap:0}
+/* شريط التنقل */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;gap:4px;padding:6px 8px calc(env(safe-area-inset-bottom) + 6px);background:#061820f2;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--line)}
+.nav button{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;background:none;box-shadow:none;color:var(--mu);font-size:.7rem;font-weight:700;padding:7px 2px;border-radius:14px}
+.nav .ic{font-size:1.25rem;line-height:1.3}
+.nav button.on{color:var(--tl);background:#2dd4bf1c}
+.nav .dot{display:none;position:absolute;top:5px;left:calc(50% + 9px);width:8px;height:8px;border-radius:50%;background:var(--r)}
+body.islive .nav button[data-s=live] .dot{display:block}
+@media(min-width:900px){
+ body{padding:0 98px 0 0}.nav{left:auto;top:0;bottom:0;width:98px;flex-direction:column;justify-content:flex-start;gap:6px;padding:92px 8px 8px;border-top:0;border-inline-start:1px solid var(--line)}
+ .top{margin:0 -14px}.lg2{grid-template-columns:1.7fr 1fr;gap:14px}main{padding:0 22px}}
+/* البطاقات والعناصر */
+.c{background:var(--glass);border:1px solid var(--line);border-radius:20px;padding:16px;margin:12px 0;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 18px 40px -24px #000,inset 0 1px 0 #ffffff0f}
+h1{font-size:1.02rem;font-weight:900;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+h1::before{content:"";width:5px;height:18px;border-radius:4px;background:linear-gradient(var(--g),var(--g2))}
+button,input,select,textarea{font:inherit;border-radius:12px;border:1px solid var(--line);background:#031014b3;color:var(--tx);padding:11px 14px;transition:border-color .2s,box-shadow .2s,transform .15s,filter .2s}
+input,select,textarea{width:100%;margin:5px 0}
+input:focus,select:focus,textarea:focus{outline:0;border-color:#2dd4bf;box-shadow:0 0 0 3px #2dd4bf33}
+button:focus-visible{outline:2px solid var(--tl);outline-offset:2px}
+input[type=text]{text-align:center}input[type=radio]{width:auto;margin:0;accent-color:#2dd4bf}
+button{cursor:pointer;background:linear-gradient(135deg,var(--t1),var(--t2));border:0;font-weight:700;color:#fff;box-shadow:0 8px 20px -10px #2dd4bfb3}
+button:hover{filter:brightness(1.1)}button:active{transform:scale(.96)}
+button.g{background:linear-gradient(135deg,var(--g),var(--g2));color:#2a1a02;box-shadow:0 8px 20px -10px #f2b84bb3}
+button.x{background:#ffffff14;box-shadow:none;border:1px solid var(--line)}
+video{width:100%;border-radius:16px;background:#000;max-height:62vh;margin-top:10px;border:1px solid var(--line);box-shadow:0 14px 34px -14px #000}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row input{flex:1;min-width:140px}
+.i{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 0;border-top:1px solid var(--line)}
+.i:first-of-type{border-top:0}
+.i a{color:var(--tl);text-decoration:none;background:#2dd4bf1f;padding:5px 14px;border-radius:99px;font-weight:700;font-size:.85rem}a{color:var(--tl)}
+#ls,#st{display:inline-flex;align-items:center;gap:8px;background:#ffffff0d;padding:6px 14px;border-radius:99px}
+#st:empty{display:none}
+#hd:empty::before{content:"لا توجد أيدٍ مرفوعة";color:var(--mu);font-size:.85rem}
+#hd .i{background:#f2b84b14;border:1px solid #f2b84b33;border-radius:14px;padding:9px 12px;margin:6px 0}
+#ch{max-height:260px;overflow:auto;display:flex;flex-direction:column;gap:6px;padding:6px 2px;margin:8px 0}
+#ch .m{max-width:85%;align-self:flex-start;background:#ffffff10;border-radius:14px 14px 14px 4px;padding:7px 12px}
+#ch .m.me{align-self:flex-end;background:#0d948866;border-radius:14px 14px 4px 14px}
+#ch .m.t{background:#f2b84b26;border:1px solid #f2b84b55}
+#ch .m b{display:block;font-size:.72rem;color:var(--tl)}#ch .m.t b{color:var(--g)}
+#ch .m span{font-size:.9rem;word-break:break-word}#ch .m small{display:block;font-size:.65rem;color:var(--mu);text-align:end}
+#ch>.mu{text-align:center}
+.q{padding:12px 0;border-top:1px solid var(--line)}
+.q label{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:6px 0;border:1px solid var(--line);border-radius:12px;background:#ffffff08;cursor:pointer}
+.q label:has(input:checked){border-color:#2dd4bf;background:#2dd4bf1f}
+#qf:empty{display:none}#rd{width:100%;margin-top:10px;border-radius:14px;overflow:hidden}
+.login{max-width:440px;margin:12vh auto 0;text-align:center}.login .lg{margin:0 auto 10px;width:60px;height:60px;font-size:1.8rem;border-radius:18px}
+.login button{width:100%;margin-top:6px}
+::-webkit-scrollbar{width:7px}::-webkit-scrollbar-thumb{background:#5eead44d;border-radius:8px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style><script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script><link rel="manifest" href="manifest-student.json"><link rel="apple-touch-icon" href="icon-student-192.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="الشاعر لايف"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<script>
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+(function(){
+  let ev,b;const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone,ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  function bar(txt,fn){if(standalone||b)return;b=document.createElement('button');b.textContent=txt;
+    b.style.cssText='position:fixed;z-index:60;inset-inline:14px;bottom:calc(env(safe-area-inset-bottom) + 84px);max-width:420px;margin:auto;padding:12px 16px;border:0;border-radius:14px;font:700 .95rem Cairo,sans-serif;color:#2a1a02;background:linear-gradient(135deg,#f2b84b,#e8913a);box-shadow:0 12px 30px -10px #000;cursor:pointer';
+    b.onclick=()=>{fn&&fn();b.remove();b=null};document.body.appendChild(b);setTimeout(()=>b&&b.remove(),20000)}
+  addEventListener('beforeinstallprompt',e=>{e.preventDefault();ev=e;bar('⬇ ثبّت التطبيق على جهازك',()=>ev.prompt())});
+  addEventListener('appinstalled',()=>{b&&b.remove()});
+  if(ios&&!standalone)addEventListener('load',()=>setTimeout(()=>bar('للتثبيت: اضغط زر المشاركة ثم "إضافة إلى الشاشة الرئيسية"'),2500));
+})();
+</script></head><body><div id="root"></div><script type="text/babel">
+const {useState,useEffect,useRef}=React;
+firebase.initializeApp({apiKey:"AIzaSyBrhm4566518XQ5ieWw1W9w55cZatVk4Y4",authDomain:"data-a7ab2.firebaseapp.com",databaseURL:"https://data-a7ab2-default-rtdb.firebaseio.com",projectId:"data-a7ab2",appId:"1:302828182285:web:c5a7206640de4f714b6e44"});
+const D=firebase.database(),ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'}]};
+const dev=localStorage.dev||(localStorage.dev=(crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2)+Date.now()));
+const clean=r=>String(r||'').trim().replace(/[.#$\[\]\/\\'"`<>\s]+/g,'_');
+const tm=t=>new Date(t).toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
+function useVal(path,q){
+  const[v,setV]=useState(null);
+  useEffect(()=>{
+    if(!path){setV(null);return}
+    const r=q?q(D.ref(path)):D.ref(path),f=s=>setV(s.val());
+    r.on('value',f);return()=>r.off('value',f);
+  },[path]);
+  return v;
+}
+const TABS=[['live','📡','المحاضرة'],['files','📁','الملفات'],['rec','🎞','المسجلة'],['quiz','📝','الاختبارات']];
+
+function App(){
+  const[me,setMe]=useState(null),[err,setErr]=useState(''),[scr,setScr]=useState('live'),[code,setCode]=useState('');
+  const[joined,setJoined]=useState(false),[ready,setReady]=useState(false),[rec,setRec]=useState(null),[raised,setRaised]=useState(false);
+  const[msg,setMsg]=useState(''),[tk,setTk]=useState(''),[note,setNote]=useState(''),[qk,setQk]=useState(null),[ans,setAns]=useState({}),[qres,setQres]=useState(null);
+  const R=useRef({}).current,vref=useRef(),chRef=useRef();
+  const ses=useVal(me&&'live/sessions/'+me.c);
+  const chat=useVal(me&&ses&&ses.sid&&`live/chat/${me.c}/${ses.sid}`,r=>r.limitToLast(60));
+  const files=useVal(me&&'live/files/'+me.c),lecs=useVal(me&&'live/lectures/'+me.c);
+  const quizzes=useVal(me&&'live/quizzes/'+me.c)||{},results=useVal(me&&'live/results')||{};
+  const talk=useVal(me&&`live/talk/${me.c}/${me.id}`);
+
+  async function login(raw,e0){
+    if(e0)return setErr(e0);
+    const c=clean(raw);if(!c)return;
+    const st=(await D.ref('live/students/'+c).once('value')).val();
+    if(!st){localStorage.removeItem('code');return setErr('هذا الباركود غير مسجل')}
+    const r=await D.ref('live/bind/'+c).transaction(v=>v||dev);
+    if(r.snapshot.val()!==dev){localStorage.removeItem('code');return setErr('هذا الباركود مرتبط بجهاز آخر. تواصل مع المدرس لفك الربط.')}
+    localStorage.code=c;setErr('');setMe({id:c,n:st.n,c:st.c});
+  }
+  async function scan(){
+    const sc=new Html5Qrcode('rd');
+    try{await sc.start({facingMode:'environment'},{fps:10,qrbox:220},t=>{sc.stop().catch(()=>{});login(t)})}
+    catch(e){setErr('تعذر تشغيل الكاميرا، اكتب الرمز يدوياً')}
+  }
+  useEffect(()=>{if(localStorage.code)login(localStorage.code)},[]);
+  // جلسة واحدة فقط: أي نافذة أقدم تُغلق
+  useEffect(()=>{
+    if(!me)return;
+    const tok=String(Date.now()),ref=D.ref('live/tok/'+me.id);let on=true;
+    const f=s=>{if(s.val()&&s.val()!==tok)out('تم فتح حسابك من نافذة أخرى.')};
+    ref.set(tok).then(()=>on&&ref.on('value',f));
+    return()=>{on=false;ref.off('value',f)};
+  },[me&&me.id]);
+  useEffect(()=>{document.body.classList.toggle('islive',!!ses)},[ses]);
+  useEffect(()=>{if(me&&!ses&&R.pc){leave();setNote('انتهت المحاضرة.')}},[ses]);
+  useEffect(()=>{if(chRef.current)chRef.current.scrollTop=1e9},[chat]);
+  // إذن التحدث: يُفتح الميكروفون فقط عندما يسمح المدرس
+  useEffect(()=>{
+    if(!ready||!R.pc)return;
+    const t=R.pc.getTransceivers().find(x=>x.receiver.track.kind==='audio');if(!t)return;
+    if(talk){
+      navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}})
+        .then(m=>{R.mic=m;return t.sender.replaceTrack(m.getAudioTracks()[0])}).then(()=>setTk('🎤 الميكروفون مفتوح لك')).catch(()=>setTk('تعذر تشغيل الميكروفون'));
+    }else{t.sender.replaceTrack(null).catch(()=>{});stopMic();setTk('');setRaised(false)}
+  },[talk,ready]);
+
+  function stopMic(){if(R.mic){R.mic.getTracks().forEach(x=>x.stop());R.mic=null}}
+  function out(m){leave();localStorage.removeItem('code');setMe(null);setErr(m||'')}
+  async function join(){
+    const base=D.ref(`live/rtc/${me.c}/${me.id}`);await base.remove();
+    const pc=R.pc=new RTCPeerConnection(ICE);setJoined(true);setRec(null);setNote('');
+    pc.ontrack=e=>{vref.current.srcObject=e.streams[0]};
+    pc.onicecandidate=e=>e.candidate&&base.child('sc').push(e.candidate.toJSON());
+    const add=c=>pc.remoteDescription?pc.addIceCandidate(c).catch(()=>{}):setTimeout(()=>add(c),300);
+    base.child('tc').on('child_added',s=>add(s.val()));
+    base.child('offer').on('value',async s=>{
+      const o=s.val();if(!o||pc.remoteDescription)return;
+      await pc.setRemoteDescription(o);
+      pc.getTransceivers().forEach(x=>{if(x.receiver.track.kind==='audio')x.direction='sendrecv'});
+      await pc.setLocalDescription(await pc.createAnswer());
+      base.child('answer').set({type:pc.localDescription.type,sdp:pc.localDescription.sdp});setReady(true);
+    });
+    await D.ref(`live/join/${me.c}/${me.id}`).set(Date.now());
+  }
+  function leave(){
+    if(!R.pc||!me)return;
+    const b=D.ref(`live/rtc/${me.c}/${me.id}`);b.child('offer').off();b.child('tc').off();
+    R.pc.close();R.pc=null;stopMic();setJoined(false);setReady(false);setRaised(false);setTk('');
+    D.ref(`live/hands/${me.c}/${me.id}`).remove();D.ref(`live/join/${me.c}/${me.id}`).remove();
+    if(vref.current)vref.current.srcObject=null;
+  }
+  function play(u){leave();setRec(u);setScr('live')}
+  function hand(){
+    if(!R.pc)return alert('انضم للمحاضرة أولاً');
+    const r=D.ref(`live/hands/${me.c}/${me.id}`);
+    if(!raised){r.set({n:me.n});r.onDisconnect().remove()}else r.remove();
+    setRaised(!raised);
+  }
+  function say(){
+    const m=msg.trim();if(!m||!ses||Date.now()-(R.last||0)<1500)return;R.last=Date.now();
+    D.ref(`live/chat/${me.c}/${ses.sid}`).push({n:me.n,id:me.id,m:m.slice(0,300),t:Date.now()});setMsg('');
+  }
+  async function sendQ(){
+    const q=quizzes[qk];let s=0;
+    for(let i=0;i<q.qs.length;i++){if(ans[i]==null)return alert('أجب عن كل الأسئلة أولاً');if(ans[i]===q.qs[i].a)s++}
+    if(!confirm('إرسال الإجابات؟ لا يمكن إعادة الاختبار.'))return;
+    const r=await D.ref(`live/results/${qk}/${me.id}`).transaction(v=>v||{s,n:q.qs.length,t:Date.now()});setQres(r.snapshot.val());
+  }
+
+  if(!me)return(
+    <main><div className="c login"><div className="lg">🎓</div><h1 style={{justifyContent:'center'}}>الشاعر لايف</h1>
+      <p className="mu">امسح الباركود الخاص بك أو اكتب رمزه. الباركود يرتبط بأول جهاز تدخل منه ولا يعمل على جهاز آخر.</p>
+      <button className="g" onClick={scan}>📷 مسح الباركود بالكاميرا</button><div id="rd"></div>
+      <input type="text" placeholder="أو اكتب رمز الباركود" value={code} onChange={e=>setCode(e.target.value)} onKeyDown={e=>e.key==='Enter'&&login(code)}/>
+      <button onClick={()=>login(code)}>دخول</button>
+      {err&&<p style={{color:'var(--r)'}}>{err}</p>}</div></main>);
+
+  const sc=k=>'scr'+(scr===k?' on':''),done=k=>results[k]&&results[k][me.id];
+  const L=Object.values(lecs||{}).sort((a,b)=>b.t-a.t),F=Object.values(files||{}),Q=quizzes[qk];
+  return(
+    <main>
+      <header className="top"><div className="lg">🎓</div><div className="tt"><b>{me.n}</b><small>طالب · الشاعر لايف</small></div><span className="chip">مباشر</span><button className="x" onClick={()=>out()}>خروج</button></header>
+
+      <section className={sc('live')}><div className="lg2">
+        <div><div className="c"><h1>المحاضرة</h1>
+          <p id="ls" className="mu">{ses?'محاضرة مباشرة الآن: '+ses.title:note||'لا توجد محاضرة الآن.'}</p>
+          {ses&&!joined&&<button className="g" onClick={join}>انضم الآن</button>}
+          <video ref={vref} className={joined||rec?'':'hide'} src={rec||undefined} autoPlay playsInline controls controlsList="nodownload noremoteplayback" disablePictureInPicture/></div></div>
+        {ses&&<div><div className="c"><h1>دردشة المحاضرة</h1>
+          <div className="row" style={{justifyContent:'space-between'}}><button className="x" onClick={hand}>{raised?'🔽 أنزل يدك':'✋ ارفع يدك'}</button><span className="mu">{tk}</span></div>
+          <div id="ch" ref={chRef}>{chat?Object.values(chat).map((x,i)=>
+            <div key={i} className={'m '+(x.id==='T'?'t':x.id===me.id?'me':'')}><b>{x.n}</b><span>{x.m}</span><small>{tm(x.t)}</small></div>)
+            :<p className="mu">محاضرة جديدة — اكتب سؤالك للمدرس 👋</p>}</div>
+          <div className="row"><input type="text" style={{textAlign:'right',letterSpacing:0}} placeholder="اكتب سؤالك للمدرس" value={msg} onChange={e=>setMsg(e.target.value)} onKeyDown={e=>e.key==='Enter'&&say()}/><button onClick={say}>إرسال</button></div></div></div>}
+      </div></section>
+
+      <section className={sc('files')}><div className="c"><h1>ملفات الصف</h1>
+        {F.map((x,i)=><div className="i" key={i}><span>{x.type.startsWith('image')?'🖼':x.type.startsWith('video')?'🎞':'📄'} {x.name}</span><a href={x.url} target="_blank" rel="noopener">فتح</a></div>)}
+        {!F.length&&<p className="mu">لا توجد ملفات.</p>}</div></section>
+
+      <section className={sc('rec')}><div className="c"><h1>المحاضرات المسجلة</h1>
+        {L.map((x,i)=><div className="i" key={i}><span>{x.title}<br/><small className="mu">{new Date(x.t).toLocaleDateString('ar-EG')}</small></span><button className="x" onClick={()=>play(x.url)}>تشغيل</button></div>)}
+        {!L.length&&<p className="mu">لا توجد محاضرات مسجلة بعد.</p>}</div></section>
+
+      <section className={sc('quiz')}><div className="c"><h1>الاختبارات</h1>
+        {Object.keys(quizzes).map(k=><div className="i" key={k}><span>{quizzes[k].title}</span>
+          {done(k)?<b>{done(k).s} / {done(k).n}</b>:<button onClick={()=>{setQk(k);setAns({});setQres(null)}}>ابدأ</button>}</div>)}
+        {!Object.keys(quizzes).length&&<p className="mu">لا توجد اختبارات.</p>}</div>
+        {Q&&<div className="c"><h1>{Q.title}</h1>
+          {qres?<h1>نتيجتك: {qres.s} / {qres.n}</h1>:<>
+            {Q.qs.map((x,i)=><div className="q" key={i}><b>{i+1}. {x.q}</b>
+              {x.o.map((o,j)=><label key={j}><input type="radio" name={'q'+i} checked={ans[i]===j} onChange={()=>setAns({...ans,[i]:j})}/> {o}</label>)}</div>)}
+            <button className="g" onClick={sendQ}>إرسال الإجابات</button></>}</div>}</section>
+
+      <nav className="nav">{TABS.map(([k,ic,t])=><button key={k} className={scr===k?'on':''} onClick={()=>{setScr(k);scrollTo(0,0)}}><span className="ic">{ic}</span>{t}{k==='live'&&<i className="dot"/>}</button>)}</nav>
+    </main>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script></body></html>

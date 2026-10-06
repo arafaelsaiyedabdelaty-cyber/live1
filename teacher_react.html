@@ -1,0 +1,278 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="theme-color" content="#061820"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>الشاعر لايف - المدرس</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+<style>
+:root{--ink:#061820;--line:#ffffff17;--g:#f2b84b;--g2:#e8913a;--t1:#0d9488;--t2:#0ea5e9;--tl:#5eead4;--tx:#e6f1f3;--mu:#8fb0b8;--r:#fb7185;--glass:#0a202aa6}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;color:var(--tx);font-family:Cairo,sans-serif;min-height:100vh;padding-bottom:88px;background:radial-gradient(120% 80% at 80% -10%,#0d3a45,transparent 60%),radial-gradient(90% 70% at 0 100%,#10264a,transparent 60%),var(--ink);background-attachment:fixed}
+main{max-width:1100px;margin:auto;padding:0 14px}
+.hide{display:none!important}.mu{color:var(--mu);font-size:.85rem;margin:4px 0}
+/* الشريط العلوي */
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;margin:0 -14px;padding:calc(env(safe-area-inset-top) + 10px) 14px 10px;background:#061820d9;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.lg{width:42px;height:42px;flex:none;border-radius:13px;display:grid;place-items:center;font-size:1.3rem;background:linear-gradient(135deg,var(--g),var(--g2));box-shadow:0 8px 20px -10px #f2b84bb3}
+.tt{flex:1;min-width:0}.tt b{display:block;font-weight:900;font-size:1.02rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tt small{color:var(--mu);font-size:.75rem}
+.top select{width:auto;max-width:42vw;margin:0;padding:8px 10px}
+.chip{display:none;align-items:center;gap:6px;font-size:.78rem;font-weight:700;color:#2a1a02;background:linear-gradient(135deg,var(--g),var(--g2));padding:4px 11px;border-radius:99px}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7f1d1d;animation:pl 1.6s infinite}
+body.islive .chip{display:inline-flex}
+@keyframes pl{50%{opacity:.25}}
+/* الشاشات */
+.scr{display:none;padding-top:6px}.scr.on{display:block;animation:fd .25s ease-out}
+@keyframes fd{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.lg2{display:grid;gap:0}
+/* شريط التنقل */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;gap:4px;padding:6px 8px calc(env(safe-area-inset-bottom) + 6px);background:#061820f2;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--line)}
+.nav button{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;background:none;box-shadow:none;color:var(--mu);font-size:.7rem;font-weight:700;padding:7px 2px;border-radius:14px}
+.nav .ic{font-size:1.25rem;line-height:1.3}
+.nav button.on{color:var(--tl);background:#2dd4bf1c}
+.nav .dot{display:none;position:absolute;top:5px;left:calc(50% + 9px);width:8px;height:8px;border-radius:50%;background:var(--r)}
+body.islive .nav button[data-s=live] .dot{display:block}
+@media(min-width:900px){
+ body{padding:0 98px 0 0}.nav{left:auto;top:0;bottom:0;width:98px;flex-direction:column;justify-content:flex-start;gap:6px;padding:92px 8px 8px;border-top:0;border-inline-start:1px solid var(--line)}
+ .top{margin:0 -14px}.lg2{grid-template-columns:1.7fr 1fr;gap:14px}main{padding:0 22px}}
+/* البطاقات والعناصر */
+.c{background:var(--glass);border:1px solid var(--line);border-radius:20px;padding:16px;margin:12px 0;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 18px 40px -24px #000,inset 0 1px 0 #ffffff0f}
+h1{font-size:1.02rem;font-weight:900;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+h1::before{content:"";width:5px;height:18px;border-radius:4px;background:linear-gradient(var(--g),var(--g2))}
+button,input,select,textarea{font:inherit;border-radius:12px;border:1px solid var(--line);background:#031014b3;color:var(--tx);padding:11px 14px;transition:border-color .2s,box-shadow .2s,transform .15s,filter .2s}
+input,select,textarea{width:100%;margin:5px 0}
+input:focus,select:focus,textarea:focus{outline:0;border-color:#2dd4bf;box-shadow:0 0 0 3px #2dd4bf33}
+button:focus-visible{outline:2px solid var(--tl);outline-offset:2px}
+input[type=text]{text-align:center}input[type=radio]{width:auto;margin:0;accent-color:#2dd4bf}
+button{cursor:pointer;background:linear-gradient(135deg,var(--t1),var(--t2));border:0;font-weight:700;color:#fff;box-shadow:0 8px 20px -10px #2dd4bfb3}
+button:hover{filter:brightness(1.1)}button:active{transform:scale(.96)}
+button.g{background:linear-gradient(135deg,var(--g),var(--g2));color:#2a1a02;box-shadow:0 8px 20px -10px #f2b84bb3}
+button.x{background:#ffffff14;box-shadow:none;border:1px solid var(--line)}
+video{width:100%;border-radius:16px;background:#000;max-height:62vh;margin-top:10px;border:1px solid var(--line);box-shadow:0 14px 34px -14px #000}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row input{flex:1;min-width:140px}
+.i{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 0;border-top:1px solid var(--line)}
+.i:first-of-type{border-top:0}
+.i a{color:var(--tl);text-decoration:none;background:#2dd4bf1f;padding:5px 14px;border-radius:99px;font-weight:700;font-size:.85rem}a{color:var(--tl)}
+#ls,#st{display:inline-flex;align-items:center;gap:8px;background:#ffffff0d;padding:6px 14px;border-radius:99px}
+#st:empty{display:none}
+#hd:empty::before{content:"لا توجد أيدٍ مرفوعة";color:var(--mu);font-size:.85rem}
+#hd .i{background:#f2b84b14;border:1px solid #f2b84b33;border-radius:14px;padding:9px 12px;margin:6px 0}
+#ch{max-height:260px;overflow:auto;display:flex;flex-direction:column;gap:6px;padding:6px 2px;margin:8px 0}
+#ch .m{max-width:85%;align-self:flex-start;background:#ffffff10;border-radius:14px 14px 14px 4px;padding:7px 12px}
+#ch .m.me{align-self:flex-end;background:#0d948866;border-radius:14px 14px 4px 14px}
+#ch .m.t{background:#f2b84b26;border:1px solid #f2b84b55}
+#ch .m b{display:block;font-size:.72rem;color:var(--tl)}#ch .m.t b{color:var(--g)}
+#ch .m span{font-size:.9rem;word-break:break-word}#ch .m small{display:block;font-size:.65rem;color:var(--mu);text-align:end}
+#ch>.mu{text-align:center}
+.q{padding:12px 0;border-top:1px solid var(--line)}
+.q label{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:6px 0;border:1px solid var(--line);border-radius:12px;background:#ffffff08;cursor:pointer}
+.q label:has(input:checked){border-color:#2dd4bf;background:#2dd4bf1f}
+#qf:empty{display:none}#rd{width:100%;margin-top:10px;border-radius:14px;overflow:hidden}
+.login{max-width:440px;margin:12vh auto 0;text-align:center}.login .lg{margin:0 auto 10px;width:60px;height:60px;font-size:1.8rem;border-radius:18px}
+.login button{width:100%;margin-top:6px}
+::-webkit-scrollbar{width:7px}::-webkit-scrollbar-thumb{background:#5eead44d;border-radius:8px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style><script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script><link rel="manifest" href="manifest-teacher.json"><link rel="apple-touch-icon" href="icon-teacher-192.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="لايف المدرس"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<script>
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+(function(){
+  let ev,b;const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone,ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  function bar(txt,fn){if(standalone||b)return;b=document.createElement('button');b.textContent=txt;
+    b.style.cssText='position:fixed;z-index:60;inset-inline:14px;bottom:calc(env(safe-area-inset-bottom) + 84px);max-width:420px;margin:auto;padding:12px 16px;border:0;border-radius:14px;font:700 .95rem Cairo,sans-serif;color:#2a1a02;background:linear-gradient(135deg,#f2b84b,#e8913a);box-shadow:0 12px 30px -10px #000;cursor:pointer';
+    b.onclick=()=>{fn&&fn();b.remove();b=null};document.body.appendChild(b);setTimeout(()=>b&&b.remove(),20000)}
+  addEventListener('beforeinstallprompt',e=>{e.preventDefault();ev=e;bar('⬇ ثبّت التطبيق على جهازك',()=>ev.prompt())});
+  addEventListener('appinstalled',()=>{b&&b.remove()});
+  if(ios&&!standalone)addEventListener('load',()=>setTimeout(()=>bar('للتثبيت: اضغط زر المشاركة ثم "إضافة إلى الشاشة الرئيسية"'),2500));
+})();
+</script></head><body><div id="root"></div><script type="text/babel">
+const {useState,useEffect,useRef}=React;
+firebase.initializeApp({apiKey:"AIzaSyBrhm4566518XQ5ieWw1W9w55cZatVk4Y4",authDomain:"data-a7ab2.firebaseapp.com",databaseURL:"https://data-a7ab2-default-rtdb.firebaseio.com",projectId:"data-a7ab2",storageBucket:"data-a7ab2.firebasestorage.app",appId:"1:302828182285:web:c5a7206640de4f714b6e44"});
+const D=firebase.database(),S=firebase.storage(),ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'}]};
+const arr=x=>x?Object.values(x):[];
+const tm=t=>new Date(t).toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
+function useVal(path,q){
+  const[v,setV]=useState(null);
+  useEffect(()=>{
+    if(!path){setV(null);return}
+    const r=q?q(D.ref(path)):D.ref(path),f=s=>setV(s.val());
+    r.on('value',f);return()=>r.off('value',f);
+  },[path]);
+  return v;
+}
+function parseQ(t){return t.trim().split(/\n\s*\n/).map(b=>{const l=b.split('\n').map(x=>x.trim()).filter(Boolean),o=l.slice(1);
+  return{q:l[0],o:o.map(x=>x.replace(/^\*\s*/,'')),a:o.findIndex(x=>x[0]==='*')}}).filter(x=>x.o.length>1&&x.a>=0)}
+const TABS=[['live','📡','البث'],['files','📁','الملفات'],['rec','🎞','المسجلة'],['quiz','📝','الاختبارات'],['stu','📱','الأجهزة']];
+
+function App(){
+  const[ok,setOk]=useState(false),[pw,setPw]=useState(''),[bad,setBad]=useState(false),[core,setCore]=useState({classes:[],students:[]});
+  const[cid,setCid]=useState(''),[scr,setScr]=useState('live'),[live,setLive]=useState(false),[ending,setEnding]=useState(false);
+  const[st,setSt]=useState(''),[ttl,setTtl]=useState(''),[sharing,setSharing]=useState(false),[sid,setSid]=useState(''),[cm,setCm]=useState('');
+  const[qt,setQt]=useState(''),[qb,setQb]=useState(''),[up,setUp]=useState(''),[qres,setQres]=useState({}),[badLinks,setBadLinks]=useState([]);
+  const R=useRef({pcs:{},auds:{},segs:[]}).current,mev=useRef(),chRef=useRef(),fl=useRef();
+  const lecs=useVal(cid&&'live/lectures/'+cid),files=useVal(cid&&'live/files/'+cid),quizzes=useVal(cid&&'live/quizzes/'+cid)||{};
+  const chat=useVal(cid&&sid&&`live/chat/${cid}/${sid}`,r=>r.limitToLast(100));
+  const hands=useVal(cid&&'live/hands/'+cid)||{},talk=useVal(cid&&'live/talk/'+cid)||{},bind=useVal('live/bind')||{};
+  R.talk=talk;
+  useEffect(()=>{Object.keys(R.auds).forEach(k=>R.auds[k].muted=!talk[k])},[talk]);
+  useEffect(()=>{document.body.classList.toggle('islive',live)},[live]);
+  useEffect(()=>{if(chRef.current)chRef.current.scrollTop=1e9},[chat]);
+
+  async function login(){
+    const v=(await D.ref('school_system/data').once('value')).val()||{};
+    if(pw!==(v.appPassword||'Arafa@194'))return setBad(true);
+    const c={classes:arr(v.classes),students:arr(v.students)},idx={};
+    c.students.forEach(s=>idx[s.id]={n:s.name,c:s.classId});
+    D.ref('live/students').set(idx);setCore(c);setOk(true);
+  }
+  const count=()=>setSt('المحاضرة جارية والتسجيل يعمل. المتصلون الآن: '+Object.values(R.pcs).filter(p=>p.connectionState==='connected').length);
+
+  /* ===== البث والتسجيل ===== */
+  async function start(){
+    if(!cid)return alert('اختر الصف أولاً');
+    try{R.stream=await navigator.mediaDevices.getUserMedia({video:{width:640,height:360},audio:true})}catch(e){return alert('تعذر تشغيل الكاميرا أو الميكروفون')}
+    R.title=ttl.trim()||'محاضرة '+new Date().toLocaleDateString('ar-EG');R.cid=cid;setBadLinks([]);
+    mev.current.srcObject=R.stream;R.segs=[];
+    R.mt=['video/webm;codecs=vp8,opus','video/mp4'].find(x=>MediaRecorder.isTypeSupported(x))||'';
+    R.curV=R.stream.getVideoTracks()[0];mkRec(R.curV);
+    for(const p of ['chat','hands','talk'])await D.ref(`live/${p}/${cid}`).remove();
+    const s=R.sid='s'+Date.now();setSid(s);
+    const ses=D.ref('live/sessions/'+cid);await ses.set({title:R.title,t:Date.now(),sid:s});ses.onDisconnect().remove();
+    const j=R.j=D.ref('live/join/'+cid);
+    j.on('child_added',x=>connect(x.key));j.on('child_changed',x=>connect(x.key));
+    j.on('child_removed',x=>{if(R.pcs[x.key]){R.pcs[x.key].close();delete R.pcs[x.key];count()}});
+    setLive(true);count();
+  }
+  async function connect(u){
+    if(R.pcs[u])R.pcs[u].close();
+    const base=D.ref(`live/rtc/${R.cid}/${u}`);await base.remove();
+    const pc=R.pcs[u]=new RTCPeerConnection(ICE);
+    [R.curV,...R.stream.getAudioTracks()].forEach(x=>pc.addTrack(x,R.stream));
+    // صوت الطالب يصل للمدرس فقط، ويُسمع فقط إذا سمح له
+    pc.ontrack=e=>{if(e.track.kind!=='audio')return;const a=R.auds[u]=R.auds[u]||new Audio();a.srcObject=new MediaStream([e.track]);a.muted=!R.talk[u];a.play().catch(()=>{})};
+    pc.getSenders().forEach(s=>{if(s.track&&s.track.kind==='video'){const p=s.getParameters();p.encodings=p.encodings&&p.encodings.length?p.encodings:[{}];p.encodings[0].maxBitrate=5e5;s.setParameters(p).catch(()=>{})}});
+    pc.onicecandidate=e=>e.candidate&&base.child('tc').push(e.candidate.toJSON());
+    pc.onconnectionstatechange=count;
+    const add=c=>pc.remoteDescription?pc.addIceCandidate(c).catch(()=>{}):setTimeout(()=>add(c),300);
+    base.child('answer').on('value',async s=>{const a=s.val();if(a&&!pc.remoteDescription)await pc.setRemoteDescription(a)});
+    base.child('sc').on('child_added',s=>add(s.val()));
+    await pc.setLocalDescription(await pc.createOffer());
+    await base.child('offer').set({type:pc.localDescription.type,sdp:pc.localDescription.sdp});
+  }
+  function mkRec(v){
+    const ch=[],r=R.rec=new MediaRecorder(new MediaStream([v,...R.stream.getAudioTracks()]),{mimeType:R.mt,videoBitsPerSecond:8e5});
+    r.ondataavailable=e=>e.data.size&&ch.push(e.data);
+    r.onstop=()=>{R.segs.push(new Blob(ch,{type:r.mimeType||'video/webm'}));r.fin&&r.fin()};
+    r.start(5000);
+  }
+  function swap(v){ // تبديل الصورة المرسلة والمسجلة (جزء تسجيل جديد)
+    R.curV=v;Object.values(R.pcs).forEach(pc=>pc.getSenders().forEach(s=>s.track&&s.track.kind==='video'&&s.replaceTrack(v)));
+    mev.current.srcObject=new MediaStream([v]);R.rec.stop();mkRec(v);
+  }
+  async function share(){
+    if(R.sharing)return unshare();
+    let d;try{d=await navigator.mediaDevices.getDisplayMedia({video:true})}catch(e){return}
+    R.sharing=d;const v=d.getVideoTracks()[0];v.onended=unshare;swap(v);setSharing(true);
+  }
+  function unshare(){
+    if(!R.sharing)return;R.sharing.getTracks().forEach(x=>x.stop());R.sharing=null;
+    swap(R.stream.getVideoTracks()[0]);setSharing(false);
+  }
+  async function stop(){
+    if(!confirm('إنهاء المحاضرة وحفظ التسجيل؟'))return;
+    const cl=R.cid,title=R.title,sd=R.sid;setEnding(true);setSt('جارٍ حفظ التسجيل... لا تغلق الصفحة.');
+    if(R.sharing){R.sharing.getTracks().forEach(x=>x.stop());R.sharing=null;setSharing(false)}
+    R.j.off();Object.values(R.pcs).forEach(p=>p.close());R.pcs={};Object.values(R.auds).forEach(a=>a.srcObject=null);R.auds={};
+    await D.ref('live/sessions/'+cl).remove();
+    const cs0=(await D.ref(`live/chat/${cl}/${sd}`).once('value')).val();
+    await D.ref('live/chat/'+cl).remove();setSid('');
+    for(const p of ['join','rtc','hands','talk'])await D.ref(`live/${p}/${cl}`).remove();
+    R.rec.fin=async()=>{
+      R.stream.getTracks().forEach(x=>x.stop());setLive(false);
+      const bad=[];
+      for(let i=0;i<R.segs.length;i++){
+        const b=R.segs[i],ext=b.type.includes('mp4')?'mp4':'webm',id='l'+Date.now()+i,tt=R.segs.length>1?`${title} (جزء ${i+1})`:title;
+        try{const r=S.ref(`lectures/${cl}/${id}.${ext}`);await r.put(b);await D.ref(`live/lectures/${cl}/${id}`).set({title:tt,t:Date.now()+i,url:await r.getDownloadURL(),chat:i===0?cs0||null:null})}
+        catch(e){bad.push({href:URL.createObjectURL(b),name:`${tt}.${ext}`,i})}
+      }
+      setBadLinks(bad);setSt(bad.length?'تعذر رفع بعض الأجزاء (تحقق من قواعد Firebase Storage):':'تم حفظ المحاضرة في الصف.');setEnding(false);
+    };
+    R.rec.stop();
+  }
+
+  /* ===== الرسائل والتحدث والملفات ===== */
+  function say(){const m=cm.trim();if(!m||!sid)return;D.ref(`live/chat/${cid}/${sid}`).push({n:'المدرس',id:'T',m:m.slice(0,300),t:Date.now()});setCm('')}
+  function mic(k,on){const r=D.ref(`live/talk/${cid}/${k}`);if(on)r.set(true);else{r.remove();D.ref(`live/hands/${cid}/${k}`).remove()}}
+  async function upl(){
+    const f=fl.current.files[0];if(!cid||!f)return alert('اختر الصف والملف أولاً');
+    if(f.size>200*1048576)return alert('الحد الأقصى 200 ميجابايت');
+    const id='f'+Date.now(),r=S.ref(`files/${cid}/${id}-${f.name.replace(/[^\w.\u0600-\u06FF-]+/g,'_')}`);
+    try{const k=r.put(f);k.on('state_changed',s=>setUp(Math.round(100*s.bytesTransferred/s.totalBytes)+'%'));await k;
+      await D.ref(`live/files/${cid}/${id}`).set({name:f.name,type:f.type,t:Date.now(),url:await r.getDownloadURL(),p:r.fullPath});setUp('تم الرفع');fl.current.value=''}
+    catch(e){setUp('فشل الرفع، تحقق من قواعد Firebase Storage')}
+  }
+  async function delF(k,p){if(confirm('حذف الملف؟')){await S.ref(p).delete().catch(()=>{});D.ref(`live/files/${cid}/${k}`).remove()}}
+
+  /* ===== الاختبارات ===== */
+  function addQ(){
+    if(!cid)return alert('اختر الصف أولاً');
+    const qs=parseQ(qb);
+    if(!qt.trim()||!qs.length)return alert('أدخل عنواناً وسؤالاً واحداً على الأقل، مع خيارين وإجابة صحيحة مسبوقة بـ *');
+    D.ref('live/quizzes/'+cid).push({title:qt.trim(),qs,t:Date.now()});setQt('');setQb('');
+  }
+  function delQ(k){if(confirm('حذف الاختبار ونتائجه؟')){D.ref(`live/quizzes/${cid}/${k}`).remove();D.ref('live/results/'+k).remove()}}
+  async function res(k){
+    const r=(await D.ref('live/results/'+k).once('value')).val()||{},nm={};core.students.forEach(s=>nm[s.id]=s.name);
+    setQres({...qres,[k]:Object.keys(r).map(i=>({name:nm[i]||i,...r[i]}))});
+  }
+
+  if(!ok)return(
+    <main><div className="c login"><div className="lg">🎙</div><h1 style={{justifyContent:'center'}}>دخول المدرس</h1>
+      <p className="mu">كلمة المرور نفسها المستخدمة في نظام الحضور.</p>
+      <input type="password" placeholder="كلمة المرور" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==='Enter'&&login()}/>
+      {bad&&<p style={{color:'var(--r)'}}>كلمة المرور غير صحيحة</p>}<button onClick={login}>دخول</button></div></main>);
+
+  const sc=k=>'scr'+(scr===k?' on':''),L=arr(lecs).sort((a,b)=>b.t-a.t),hk=Object.keys(hands);
+  return(
+    <main>
+      <header className="top"><div className="lg">🎙</div><div className="tt"><b>الشاعر لايف</b><small>لوحة المدرس</small></div><span className="chip">مباشر</span>
+        <select value={cid} disabled={live||ending} onChange={e=>setCid(e.target.value)}><option value="">اختر الصف</option>{core.classes.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></header>
+
+      <section className={sc('live')}><div className="lg2">
+        <div><div className="c"><h1>البث المباشر</h1>
+          <div className="row"><input placeholder="عنوان المحاضرة" value={ttl} onChange={e=>setTtl(e.target.value)}/>
+            {!live&&!ending&&<button className="g" onClick={start}>ابدأ المحاضرة</button>}
+            {live&&!ending&&<><button className="x" onClick={share}>{sharing?'إيقاف مشاركة الشاشة':'مشاركة الشاشة'}</button><button className="x" onClick={stop}>إنهاء وحفظ</button></>}</div>
+          <video ref={mev} className={live?'':'hide'} muted autoPlay playsInline/>
+          {st&&<p id="st" className="mu" style={{marginTop:10}}>{st}</p>}
+          {badLinks.map(b=><div key={b.i}><a href={b.href} download={b.name}>نزّل الجزء {b.i+1}</a></div>)}</div></div>
+        <div><div className="c"><h1>رفع اليد</h1><div id="hd">{hk.map(k=><div className="i" key={k}><span>✋ {hands[k].n}{talk[k]&&<b style={{color:'var(--g)'}}> (يتحدث)</b>}</span>
+          {talk[k]?<button className="x" onClick={()=>mic(k,0)}>إيقاف</button>:<button className="g" onClick={()=>mic(k,1)}>اسمح بالتحدث</button>}</div>)}</div></div>
+        {live&&<div className="c"><h1>دردشة هذه المحاضرة</h1>
+          <div id="ch" ref={chRef}>{chat?Object.values(chat).map((x,i)=><div key={i} className={'m '+(x.id==='T'?'t me':'')}><b>{x.n}</b><span>{x.m}</span><small>{tm(x.t)}</small></div>)
+            :<p className="mu">بداية محاضرة جديدة — لا رسائل بعد.</p>}</div>
+          <div className="row"><input placeholder="اكتب رسالة للطلاب" value={cm} onChange={e=>setCm(e.target.value)} onKeyDown={e=>e.key==='Enter'&&say()}/><button className="x" onClick={say}>إرسال</button></div></div>}</div>
+      </div></section>
+
+      <section className={sc('files')}><div className="c"><h1>رفع ملف للصف</h1><p className="mu">PDF أو صور أو فيديو، حتى 200 ميجابايت.</p>
+        <input type="file" ref={fl} accept=".pdf,image/*,video/*"/><div className="row"><button onClick={upl}>رفع للصف</button><span className="mu">{up}</span></div></div>
+        <div className="c"><h1>ملفات الصف</h1>{Object.keys(files||{}).map(k=>{const x=files[k];return <div className="i" key={k}><a href={x.url} target="_blank" rel="noopener">{x.type.startsWith('image')?'🖼':x.type.startsWith('video')?'🎞':'📄'} {x.name}</a><button className="x" onClick={()=>delF(k,x.p)}>حذف</button></div>})}
+          {!files&&<p className="mu">لا توجد ملفات.</p>}</div></section>
+
+      <section className={sc('rec')}><div className="c"><h1>المحاضرات المسجلة</h1>
+        {L.map((x,i)=><div className="i" key={i}><span>{x.title}<br/><small className="mu">{new Date(x.t).toLocaleString('ar-EG')}</small></span><a href={x.url} target="_blank" rel="noopener">مشاهدة</a></div>)}
+        {!L.length&&<p className="mu">{cid?'لا توجد محاضرات محفوظة لهذا الصف بعد.':'اختر الصف أولاً.'}</p>}</div></section>
+
+      <section className={sc('quiz')}><div className="c"><h1>اختبار جديد</h1><input placeholder="عنوان الاختبار" value={qt} onChange={e=>setQt(e.target.value)}/>
+        <textarea rows="8" value={qb} onChange={e=>setQb(e.target.value)} placeholder={'اكتب كل سؤال في سطر، ثم خياراته في الأسطر التالية، وضع * قبل الإجابة الصحيحة. افصل بين الأسئلة بسطر فارغ.\n\nما عاصمة مصر؟\n*القاهرة\nالإسكندرية\nأسوان'}/>
+        <button onClick={addQ}>حفظ الاختبار للصف</button></div>
+        <div className="c"><h1>اختبارات الصف ونتائجها</h1>{Object.keys(quizzes).map(k=><div key={k}><div className="i"><span>{quizzes[k].title} <small className="mu">({quizzes[k].qs.length} أسئلة)</small></span>
+          <span><button className="x" onClick={()=>res(k)}>النتائج</button> <button className="x" onClick={()=>delQ(k)}>حذف</button></span></div>
+          {qres[k]&&(qres[k].length?qres[k].map((r,i)=><div className="i" key={i}><span>{r.name}</span><b>{r.s} / {r.n}</b></div>):<p className="mu">لم يجب أحد بعد.</p>)}</div>)}</div></section>
+
+      <section className={sc('stu')}><div className="c"><h1>أجهزة الطلاب</h1><p className="mu">كل باركود يرتبط بأول جهاز يدخل به. إذا غيّر الطالب جهازه، فُك الربط من هنا.</p>
+        {core.students.filter(x=>x.classId===cid).map(x=><div className="i" key={x.id}><span>{x.name}</span>
+          {bind[x.id]?<button className="x" onClick={()=>D.ref('live/bind/'+x.id).remove()}>فك ربط الجهاز</button>:<small className="mu">لم يدخل بعد</small>}</div>)}
+        {!cid&&<p className="mu">اختر الصف أولاً.</p>}</div></section>
+
+      <nav className="nav">{TABS.map(([k,ic,t])=><button key={k} className={scr===k?'on':''} onClick={()=>{setScr(k);scrollTo(0,0)}}><span className="ic">{ic}</span>{t}{k==='live'&&<i className="dot"/>}</button>)}</nav>
+    </main>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script></body></html>
